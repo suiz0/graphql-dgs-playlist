@@ -1,0 +1,40 @@
+#######################################################################################################################
+# GraphQL comes with a set of default scalar types out of the box
+#
+#  Int: A signed 32‐bit integer.
+#  Float: A signed double-precision floating-point value.
+#  String: A UTF‐8 character sequence.
+#  Boolean: true or false.
+#  ID: The ID scalar type represents a unique identifier often used to refetch an object or as the key for a cache. 
+#      The ID type is serialized in the same way as a String.
+#######################################################################################################################
+
+"A curated collection of tracks designed for a specific activity or mood."
+type Playlist {
+  "The ID for the playlist."
+  id: ID!
+  "The name of the playlist."
+  name: String!
+  "Describes the playlist, what to expect and entices the user to listen."
+  description: String
+  tracks: [Track!]!
+}
+
+type Track {
+  "The ID for the track."
+  id: ID!
+  "The name of the track"
+  name: String!
+  "The track length in milliseconds."
+  durationMs: Int!
+  explicit: Boolean!
+  "The URI for the track, usually a Spotify link."
+  uri: String!
+}
+
+type Query {
+  "Playlists hand-picked to be featured to all users."
+  featuredPlaylists: [Playlist!]!
+  playlist(id: ID!): Playlist
+  playlistWithLoader(id: ID!): Playlist
+}

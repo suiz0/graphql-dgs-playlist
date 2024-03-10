@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.2</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.venafi</groupId>
+	<artifactId>playlist</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>playlist</name>
+	<description>Demo project for Spring Boot</description>
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+	<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.netflix.graphql.dgs</groupId>
+            <artifactId>graphql-dgs-platform-dependencies</artifactId>
+            <!-- The DGS BOM/platform dependency. This is the only place you set version of DGS -->
+            <version>8.3.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.netflix.graphql.dgs</groupId>
+        <artifactId>graphql-dgs-spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+		 <!-- GraphQL CodeGen Plugins -->
+            <plugin>
+                <!-- Netflix have only gradle plugin, but they recommend this wrapper around it for maven -->
+                <groupId>io.github.deweyjose</groupId>
+                <artifactId>graphqlcodegen-maven-plugin</artifactId>
+                <version>1.50</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaPaths>
+                        <param>src/main/resources/schema/schema.graphqls</param>
+                    </schemaPaths>
+                    <packageName>com.venafi.playlist.graphql.generated</packageName>
+                    <addGeneratedAnnotation>true</addGeneratedAnnotation>
+                    <outputDir>src/main/java</outputDir>
+                    <typeMapping>
+                        <UUID>java.util.UUID</UUID>
+                        <FQDN>java.lang.String</FQDN>
+                        <IP>java.lang.String</IP>
+                    </typeMapping>
+                    <!-- Generated annotation adds timestamp which won't play nice with git -->
+                    <addGeneratedAnnotation>false</addGeneratedAnnotation>
+                    <!-- The manifest adds the full path to the schema instead of relative to the project dir -
+                    won't work good in CI/CD and different dev envs ... -->
+                    <onlyGenerateChanged>false</onlyGenerateChanged>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/java/com/venafi/condor/caoperations/graphql/generated</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- GraphQL CodeGen Plugins Ends -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
